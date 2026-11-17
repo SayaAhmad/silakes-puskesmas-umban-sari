@@ -1,59 +1,96 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SILAKES — Sistem Informasi Layanan Kesehatan Puskesmas Umban Sari
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi web layanan **Puskesmas Umban Sari, Pekanbaru**, dikembangkan dari laporan
+Capstone Project Kelompok 4. Terdiri dari situs publik untuk warga dan panel pengelola
+untuk petugas puskesmas.
 
-## About Laravel
+Pembeda utama: **antrian online** (ambil nomor dari rumah, tanpa datang lebih awal) dan
+**layar panggilan real-time** untuk ruang tunggu.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+![Beranda SILAKES](docs/screenshots/beranda.png)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Fitur
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Situs publik**
 
-## Learning Laravel
+- Beranda: jam operasional otomatis (buka/tutup), layanan unggulan, jadwal hari ini,
+  status antrian langsung per poli
+- Layanan: daftar + detail (persyaratan, durasi, alur)
+- Jadwal praktik per hari, dikelompokkan per poli
+- Alur pelayanan, pengumuman, FAQ, kontak
+- **Antrian online**: pilih poli → isi data → tiket digital berisi kode, nomor, estimasi
+  jam dilayani, dan sisa antrian di depan
+- **Layar panggilan** (`/antrian/layar`): nomor sedang dipanggil, status per poli, daftar
+  tunggu berikutnya — auto-refresh 5 detik
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+**Panel pengelola** (`/panel`, login)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Dasbor: ringkasan hari ini, tren 7 hari, panggil berikutnya
+- Antrian: daftar per tanggal, aksi panggil / selesai / lewat / batal, pendaftaran loket
+- CRUD poli, layanan, tenaga kesehatan, jadwal praktik, pengumuman, FAQ
+- Pengaturan identitas puskesmas, jam operasional, kontak
+- Pengguna & log aktivitas (khusus admin)
 
-## Laravel Sponsors
+![Layar panggilan](docs/screenshots/layar-panggilan.png)
+![Tiket antrian](docs/screenshots/tiket-antrian.png)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Stack
 
-### Premium Partners
+| Bagian | Teknologi |
+|---|---|
+| Backend | Laravel 12, PHP 8.4 |
+| Database | MariaDB 11.4 (MySQL-compatible) |
+| Frontend | Blade, Tailwind CSS 4, Alpine.js 3, Vite 7 |
+| Auth | Session guard Laravel, rate limit 5 percobaan/menit |
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Menjalankan
 
-## Contributing
+```bash
+composer install
+npm install
+npm run build
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+cp .env.example .env      # sesuaikan koneksi DB
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
+```
 
-## Code of Conduct
+Buka `http://127.0.0.1:8000`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Akun demo
 
-## Security Vulnerabilities
+| Peran | Email | Password |
+|---|---|---|
+| Admin | `admin@silakes.test` | `admin12345` |
+| Petugas | `petugas@silakes.test` | `petugas12345` |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+> Ganti password ini sebelum dipakai di lingkungan nyata.
 
-## License
+## Aturan data penting
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Kode antrian memakai huruf unik per poli: `U`mum, `G`igi, `K`IA, `A`nak, Gi`z`i, `T`B Paru.
+  Nomor dihitung per poli per tanggal.
+- Antrian online ditolak bila poli tidak punya jadwal aktif hari itu; kartu poli yang tutup
+  ditandai "Tidak praktik hari ini" dan tidak bisa dipilih.
+- Estimasi jam dilayani = jam panggilan terakhir + (selisih nomor × durasi layanan), tidak
+  pernah menampilkan jam yang sudah lewat.
+- Zona waktu `Asia/Jakarta`, locale fallback `id`.
+
+## Batasan produk
+
+Sesuai laporan: aplikasi **tidak** menegakkan diagnosis, **tidak** menggantikan konsultasi
+tenaga kesehatan, dan **tidak** menyimpan rekam medis elektronik. Data yang disimpan
+terbatas pada informasi layanan dan administrasi kunjungan.
+
+## Dokumentasi
+
+- [`docs/PRD.md`](docs/PRD.md) — kebutuhan produk, persona, alur, kriteria terima
+- [`docs/PANDUAN.md`](docs/PANDUAN.md) — panduan teknis & rute
+- [`GLOSSARY.md`](GLOSSARY.md) — istilah domain
+- [`docs/adr/0001-stack-dan-antrian-per-poli.md`](docs/adr/0001-stack-dan-antrian-per-poli.md) — keputusan arsitektur
+
+## Lisensi
+
+Kode aplikasi ini dibuat untuk keperluan akademik (Capstone Project Kelompok 4).
+Laravel sendiri berlisensi MIT.

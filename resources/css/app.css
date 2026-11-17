@@ -1,0 +1,312 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+
+    --color-ink: #0c2723;
+    --color-ink-soft: #1d4a43;
+    --color-pine: #0f5f54;
+    --color-teal: #12796a;
+    --color-teal-soft: #d8ece6;
+    --color-coral: #e2703f;
+    --color-coral-soft: #fbe6dc;
+    --color-cream: #fcf8f1;
+    --color-sand: #f2ece1;
+    --color-line: #e3dccd;
+
+    --radius-4xl: 2rem;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        background-color: var(--color-cream);
+        color: var(--color-ink);
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+        background-color: var(--color-teal);
+        color: #fff;
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-teal);
+        outline-offset: 3px;
+        border-radius: 4px;
+    }
+
+    h1, h2, h3 {
+        font-family: var(--font-display);
+        font-weight: 500;
+        letter-spacing: -0.02em;
+    }
+}
+
+@layer components {
+    .grain::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.035;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .kartu {
+        background: #fff;
+        border: 1px solid var(--color-line);
+        border-radius: 1.25rem;
+    }
+
+    .kartu-naik {
+        transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s, border-color 0.35s;
+    }
+    .kartu-naik:hover {
+        transform: translateY(-4px);
+        border-color: color-mix(in srgb, var(--color-teal) 35%, var(--color-line));
+        box-shadow: 0 18px 40px -24px rgba(12, 39, 35, 0.45);
+    }
+
+    .tombol {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        padding: 0.8125rem 1.5rem;
+        min-height: 44px;
+        transition: all 0.25s;
+        cursor: pointer;
+    }
+    .tombol-utama {
+        background: var(--color-ink);
+        color: #fff;
+    }
+    .tombol-utama:hover {
+        background: var(--color-teal);
+        transform: translateY(-1px);
+        box-shadow: 0 10px 24px -12px rgba(18, 121, 106, 0.7);
+    }
+    .tombol-coral {
+        background: var(--color-coral);
+        color: #fff;
+    }
+    .tombol-coral:hover {
+        background: #c95f31;
+        transform: translateY(-1px);
+    }
+    .tombol-garis {
+        border: 1px solid var(--color-line);
+        background: #fff;
+        color: var(--color-ink);
+    }
+    .tombol-garis:hover {
+        border-color: var(--color-ink);
+        background: var(--color-sand);
+    }
+
+    .label {
+        display: block;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--color-ink-soft);
+        margin-bottom: 0.4375rem;
+    }
+
+    .input {
+        width: 100%;
+        border-radius: 0.875rem;
+        border: 1px solid var(--color-line);
+        background: #fff;
+        padding: 0.75rem 1rem;
+        font-size: 0.9375rem;
+        min-height: 46px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .input:focus {
+        outline: none;
+        border-color: var(--color-teal);
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-teal) 12%, transparent);
+    }
+    .input::placeholder {
+        color: #a8a094;
+    }
+
+    .eyebrow {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--color-teal);
+    }
+
+    .tiket {
+        position: relative;
+        background: #fff;
+        border-radius: 1.5rem;
+    }
+    .tiket::before,
+    .tiket::after {
+        content: '';
+        position: absolute;
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        background: var(--color-cream);
+        border: 1px solid var(--color-line);
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .tiket::before {
+        left: -14px;
+    }
+    .tiket::after {
+        right: -14px;
+    }
+    .tiket-garis {
+        border-top: 2px dashed var(--color-line);
+    }
+
+    .dot-hidup {
+        position: relative;
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #22c55e;
+    }
+    .dot-hidup::after {
+        content: '';
+        position: absolute;
+        inset: -4px;
+        border-radius: 999px;
+        border: 2px solid #22c55e;
+        animation: denyut 2s ease-out infinite;
+    }
+
+    @keyframes denyut {
+        0% { transform: scale(0.7); opacity: 0.9; }
+        70% { transform: scale(1.6); opacity: 0; }
+        100% { opacity: 0; }
+    }
+
+    .naik-masuk {
+        animation: naikMasuk 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+    @keyframes naikMasuk {
+        from { opacity: 0; transform: translateY(14px); }
+        to { opacity: 1; transform: none; }
+    }
+
+    .nav-taut {
+        position: relative;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        color: var(--color-ink-soft);
+        padding: 0.5rem 0;
+        transition: color 0.2s;
+    }
+    .nav-taut::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 0;
+        background: var(--color-teal);
+        transition: width 0.3s;
+    }
+    .nav-taut:hover {
+        color: var(--color-ink);
+    }
+    .nav-taut:hover::after,
+    .nav-taut.aktif::after {
+        width: 100%;
+    }
+    .nav-taut.aktif {
+        color: var(--color-ink);
+        font-weight: 600;
+    }
+
+    .sidebar-taut {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        border-radius: 0.875rem;
+        padding: 0.6875rem 0.875rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #b6ccc6;
+        transition: all 0.2s;
+    }
+    .sidebar-taut:hover {
+        background: rgba(255, 255, 255, 0.07);
+        color: #fff;
+    }
+    .sidebar-taut.aktif {
+        background: var(--color-teal);
+        color: #fff;
+        font-weight: 600;
+        box-shadow: 0 8px 20px -10px rgba(18, 121, 106, 0.9);
+    }
+
+    .tabel {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.875rem;
+    }
+    .tabel th {
+        text-align: left;
+        font-size: 0.6875rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #8a8172;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--color-line);
+        white-space: nowrap;
+    }
+    .tabel td {
+        padding: 0.875rem 1rem;
+        border-bottom: 1px solid color-mix(in srgb, var(--color-line) 60%, transparent);
+        vertical-align: middle;
+    }
+    .tabel tbody tr:hover {
+        background: color-mix(in srgb, var(--color-sand) 55%, transparent);
+    }
+
+    .lencana {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        border-radius: 999px;
+        padding: 0.25rem 0.625rem;
+        font-size: 0.6875rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}

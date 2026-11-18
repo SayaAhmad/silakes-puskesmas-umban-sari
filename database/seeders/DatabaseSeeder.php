@@ -161,7 +161,10 @@ class DatabaseSeeder extends Seeder
             $poli = $polis[$poliIdx];
             $nomor[$poliIdx] = ($nomor[$poliIdx] ?? 0) + 1;
 
-            Antrian::create([
+            $dipanggil = in_array($status, ['dipanggil', 'selesai'], true) ? now()->subMinutes(30 - $i) : null;
+            $dibuat = $dipanggil ? $dipanggil->copy()->subMinutes(15 + $i) : now()->subMinutes(20 + $i);
+
+            $antrian = new Antrian([
                 'tanggal' => now()->toDateString(),
                 'poli_id' => $poli->id,
                 'nomor' => $nomor[$poliIdx],
@@ -173,9 +176,12 @@ class DatabaseSeeder extends Seeder
                 'keluhan' => $keluhan,
                 'status' => $status,
                 'sumber' => $i % 4 === 0 ? 'loket' : 'online',
-                'dipanggil_at' => in_array($status, ['dipanggil', 'selesai'], true) ? now()->subMinutes(30 - $i) : null,
+                'dipanggil_at' => $dipanggil,
                 'selesai_at' => $status === 'selesai' ? now()->subMinutes(10) : null,
             ]);
+            // created_at tidak mass-assignable: pasien mendaftar lebih dulu daripada dipanggil.
+            $antrian->created_at = $dibuat;
+            $antrian->save();
         }
 
         // --- Pengumuman ---

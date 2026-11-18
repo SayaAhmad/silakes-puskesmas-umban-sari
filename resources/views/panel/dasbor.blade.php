@@ -46,8 +46,8 @@
                 <x-ikon :nama="$k[2]" kelas="h-4 w-4 {{ $k[3] === 'kartu' ? 'text-ink/20' : 'text-white/25' }}" />
             </div>
             <p class="relative mt-3 font-display text-[34px] font-semibold leading-none">{{ $k[1] }}</p>
-            @if ($k[0] === 'Selesai dilayani' && $rataDurasi)
-                <p class="relative mt-2 text-[11.5px] {{ $k[4] }}">Rata-rata {{ $rataDurasi }} menit/pasien</p>
+            @if ($k[0] === 'Selesai dilayani' && $rataTunggu)
+                <p class="relative mt-2 text-[11.5px] {{ $k[4] }}">Rata-rata tunggu {{ $rataTunggu }} menit · 30 hari terakhir</p>
             @endif
         </div>
     @endforeach

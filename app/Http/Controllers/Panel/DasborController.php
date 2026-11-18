@@ -10,7 +10,6 @@ use App\Models\Jadwal;
 use App\Models\Layanan;
 use App\Models\Pengumuman;
 use App\Models\Poli;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DasborController extends Controller
@@ -63,17 +62,23 @@ class DasborController extends Controller
                 'dokter' => Dokter::count(),
                 'pengumuman' => Pengumuman::count(),
             ],
-            'rataDurasi' => $this->rataDurasi(),
+            'rataTunggu' => $this->rataTunggu(),
         ]);
     }
 
-    private function rataDurasi(): ?int
+    /** Rata-rata waktu tunggu (antrian dibuat → dipanggil), 30 hari terakhir. */
+    private function rataTunggu(): ?int
     {
-        $rata = Antrian::where('status', 'selesai')
-            ->whereNotNull('dipanggil_at')
-            ->whereNotNull('selesai_at')
-            ->whereDate('tanggal', '>=', now()->subDays(30)->toDateString())
-            ->selectRaw('AVG(TIMESTAMPDIFF(MINUTE, dipanggil_at, selesai_at)) as menit')
+        $selisih = match (DB::connection()->getDriverName()) {
+            'sqlite' => 'AVG((julianday(dipanggil_at) - julianday(created_at)) * 1440)',
+            default => 'AVG(TIMESTAMPDIFF(MINUTE, created_at, dipanggil_at))',
+        };
+
+        $rata = Antrian::whereNotNull('dipanggil_at')
+            // Waktu tunggu hanya bermakna bila pasien dipanggil setelah mendaftar.
+            ->whereColumn('dipanggil_at', '>=', 'created_at')
+            ->where('tanggal', '>=', now()->subDays(30)->toDateString())
+            ->selectRaw($selisih.' as menit')
             ->value('menit');
 
         return $rata ? (int) round($rata) : null;

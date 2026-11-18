@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Publik;
 use App\Http\Controllers\Controller;
 use App\Models\Antrian;
 use App\Models\Jadwal;
-use App\Models\Layanan;
+use App\Models\Pengaturan;
 use App\Models\Poli;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -44,6 +44,16 @@ class AntrianController extends Controller
         $poli = Poli::aktif()->findOrFail($data['poli_id']);
         $tanggal = now()->toDateString();
 
+        // Antrian online tutup di luar jam operasional
+        if ($this->diLuarJamOperasional()) {
+            $buka = Pengaturan::get('jam_buka');
+            $tutup = Pengaturan::get('jam_tutup');
+
+            throw ValidationException::withMessages([
+                'poli_id' => "Antrian online hanya dibuka pukul {$buka}–{$tutup} WIB. Silakan ambil nomor langsung di loket atau kembali pada jam layanan.",
+            ]);
+        }
+
         // Cek jadwal poli hari ini
         $adaJadwal = Jadwal::aktif()->where('poli_id', $poli->id)->where('hari', now()->dayOfWeek)->exists();
         if (! $adaJadwal) {
@@ -53,6 +63,17 @@ class AntrianController extends Controller
         }
 
         $antrian = DB::transaction(function () use ($data, $poli, $tanggal) {
+            // Anti-dobel: satu NIK hanya boleh punya satu antrian aktif per hari per poli
+            if (! empty($data['nik']) && Antrian::where('poli_id', $poli->id)
+                ->whereDate('tanggal', $tanggal)
+                ->where('nik', $data['nik'])
+                ->whereIn('status', ['menunggu', 'dipanggil'])
+                ->exists()) {
+                throw ValidationException::withMessages([
+                    'nik' => 'NIK ini sudah punya antrian aktif di poli ini hari ini.',
+                ]);
+            }
+
             $nomor = Antrian::nomorBerikutnya($poli->id, $tanggal);
 
             return Antrian::create([
@@ -158,5 +179,21 @@ class AntrianController extends Controller
                 ];
             })->values(),
         ]);
+    }
+
+    /** True bila waktu server di luar jam buka pengaturan (PRD F-05). */
+    private function diLuarJamOperasional(): bool
+    {
+        $buka = Pengaturan::get('jam_buka');
+        $tutup = Pengaturan::get('jam_tutup');
+
+        if (blank($buka) || blank($tutup)) {
+            return false;
+        }
+
+        $sekarang = now();
+
+        return $sekarang->lt($sekarang->copy()->setTimeFromTimeString($buka))
+            || $sekarang->gt($sekarang->copy()->setTimeFromTimeString($tutup));
     }
 }

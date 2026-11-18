@@ -71,6 +71,8 @@ Login hanya untuk petugas & admin. Masyarakat tidak perlu akun — hambatan masu
 - Halaman tiket menampilkan status (menunggu/dipanggil/selesai/lewat) yang bisa di-refresh.
 - Satu NIK hanya boleh punya satu antrian aktif per hari per poli (anti-dobel).
 - Antrian tutup otomatis di luar jam operasional.
+- Data pribadi (nama, NIK, no. HP, keluhan) dianonimkan otomatis setelah lewat batas
+  retensi (bawaan 90 hari). Nomor, kode, status, dan tanggal tetap tersimpan untuk statistik.
 
 **F-06 Layar Antrian**
 - Halaman layar penuh untuk TV ruang tunggu: nomor sedang dipanggil per poli, nomor berikutnya, jam, running text pengumuman. Auto-refresh.

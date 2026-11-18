@@ -109,6 +109,28 @@ tenaga kesehatan, dan **tidak** menyimpan rekam medis elektronik. Data yang disi
 terbatas pada informasi layanan dan administrasi kunjungan (nama, NIK opsional, nomor HP
 opsional, keluhan singkat, status antrian).
 
+Data pribadi tersebut hanya disimpan selama dibutuhkan untuk pelayanan, lalu dikosongkan
+otomatis. Batas simpan diatur di menu **Pengaturan → Privasi** (bawaan 90 hari) dan
+disimpan sebagai `retensi_hari`. Kolom `antrians.anonim_pada` mencatat kapan sebuah baris
+dianonimkan. Menjalankan manual:
+
+```bash
+php artisan antrian:anonimkan              # pakai batas dari pengaturan
+php artisan antrian:anonimkan --hari=30    # batas khusus
+php artisan antrian:anonimkan --dry-run    # hitung saja
+```
+
+Penjadwalan harian ada di `routes/console.php` (`Schedule::command('antrian:anonimkan')->dailyAt('01:00')`),
+jadi pada instalasi nyata scheduler Laravel harus aktif:
+
+```
+* * * * * cd /path-ke-aplikasi && php artisan schedule:run >> /dev/null 2>&1
+```
+
+Yang dikosongkan: `nama_pasien` (diganti teks `Pasien`), `nik`, `no_hp`, dan `keluhan`.
+Nomor antrian, kode, status, dan tanggal **tetap** supaya statistik dan rata-rata waktu
+tunggu di dasbor tidak rusak.
+
 ---
 
 ## 7. Dokumentasi terkait

@@ -19,12 +19,14 @@ class Antrian extends Model
     protected $fillable = [
         'tanggal', 'poli_id', 'nomor', 'kode', 'nama_pasien', 'nik', 'no_hp',
         'jenis_kelamin', 'keluhan', 'status', 'sumber', 'dipanggil_at', 'selesai_at',
+        'anonim_pada',
     ];
 
     protected $casts = [
         'tanggal' => 'date',
         'dipanggil_at' => 'datetime',
         'selesai_at' => 'datetime',
+        'anonim_pada' => 'datetime',
         'nomor' => 'integer',
     ];
 

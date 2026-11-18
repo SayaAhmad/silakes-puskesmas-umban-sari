@@ -253,6 +253,7 @@ class DatabaseSeeder extends Seeder
             ['visi', 'Terwujudnya masyarakat Kecamatan Rumbai yang sehat, mandiri, dan berkeadilan dalam pelayanan kesehatan.', 'umum'],
             ['misi', "Meningkatkan akses dan mutu pelayanan kesehatan dasar.\nMenguatkan upaya promotif dan preventif berbasis masyarakat.\nMengembangkan tata kelola puskesmas yang transparan dan akuntabel.", 'umum'],
             ['sambutan', 'Selamat datang di situs resmi Puskesmas Umban Sari. Kami berkomitmen memberikan pelayanan kesehatan dasar yang mudah diakses, ramah, dan bermutu bagi seluruh masyarakat Kecamatan Rumbai.', 'umum'],
+            ['retensi_hari', '90', 'privasi'],
         ];
 
         foreach ($pengaturan as [$key, $value, $grup]) {

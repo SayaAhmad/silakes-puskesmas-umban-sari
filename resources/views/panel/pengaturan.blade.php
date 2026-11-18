@@ -75,6 +75,16 @@
         </div>
 
         <div class="kartu p-6">
+            <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-ink/40">Privasi</p>
+            <div class="mt-4">
+                <label class="label">Simpan data pribadi (hari) <span class="text-coral">*</span></label>
+                <input type="number" name="retensi_hari" value="{{ old('retensi_hari', $nilai['retensi_hari']) }}" class="input" required min="1" max="3650" step="1">
+                <p class="mt-1.5 text-[11.5px] text-ink/40">Setelah lewat batas ini, nama, NIK, nomor HP, dan keluhan pasien dikosongkan otomatis. Nomor antrian, status, dan tanggal tetap tersimpan supaya statistik tidak rusak.</p>
+                @error('retensi_hari') <p class="mt-1.5 text-[12.5px] text-coral">{{ $message }}</p> @enderror
+            </div>
+        </div>
+
+        <div class="kartu p-6">
             <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-ink/40">Profil & sambutan</p>
             <div class="mt-4 space-y-4">
                 <div class="grid gap-4 sm:grid-cols-2">

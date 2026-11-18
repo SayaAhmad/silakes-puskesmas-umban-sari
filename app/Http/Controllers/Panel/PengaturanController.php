@@ -19,6 +19,7 @@ class PengaturanController extends Controller
         'jam_buka' => 'Jam buka',
         'jam_tutup' => 'Jam tutup',
         'hari_kerja' => 'Hari kerja',
+        'retensi_hari' => 'Simpan data pribadi (hari)',
         'kepala_nama' => 'Nama kepala puskesmas',
         'kepala_nip' => 'NIP kepala puskesmas',
         'visi' => 'Visi',
@@ -51,6 +52,7 @@ class PengaturanController extends Controller
             'jam_buka' => ['required', 'date_format:H:i'],
             'jam_tutup' => ['required', 'date_format:H:i', 'after:jam_buka'],
             'hari_kerja' => ['required', 'string', 'max:20'],
+            'retensi_hari' => ['required', 'integer', 'min:1', 'max:3650'],
             'kepala_nama' => ['nullable', 'string', 'max:100'],
             'kepala_nip' => ['nullable', 'string', 'max:40'],
             'visi' => ['nullable', 'string', 'max:500'],
@@ -62,7 +64,13 @@ class PengaturanController extends Controller
         ]);
 
         foreach ($data as $kunci => $nilai) {
-            Pengaturan::set($kunci, $nilai, in_array($kunci, ['jam_buka', 'jam_tutup', 'hari_kerja', 'jam_operasional'], true) ? 'operasional' : 'umum');
+            $grup = match (true) {
+                in_array($kunci, ['jam_buka', 'jam_tutup', 'hari_kerja', 'jam_operasional'], true) => 'operasional',
+                $kunci === 'retensi_hari' => 'privasi',
+                default => 'umum',
+            };
+
+            Pengaturan::set($kunci, $nilai, $grup);
         }
 
         ActivityLog::catat('pengaturan.ubah', 'Pengaturan', 'Memperbarui pengaturan situs');
@@ -82,6 +90,7 @@ class PengaturanController extends Controller
             'jam_buka' => '08:00',
             'jam_tutup' => '14:00',
             'hari_kerja' => '1,2,3,4,5,6',
+            'retensi_hari' => '90',
             'kepala_nama' => 'dr. Nama Kepala Puskesmas',
             'kepala_nip' => '19800101 200801 1 001',
             'visi' => 'Terwujudnya masyarakat Umban Sari yang sehat, mandiri, dan produktif.',
